@@ -15,30 +15,32 @@
  * https://youtu.be/NtyFx1frYB0
  */
 
+ /* WIFI settings */
+const char* ssid = "RobertHitler";
+const char* password = "HackingPrince71";
+
 /* define port */
 WiFiClient client;
 WiFiServer server(80);
-
-/* WIFI settings */
-const char* ssid = "RobertHitler";
-const char* password = "HackingPrince71";
 
 /* data received from application */
 String  data =""; 
 
 /* define L298N or L293D motor control pins */
-int IN1 = D3;     /* GPIO2(D4) -> IN3   */
-int IN2 = D4;   /* GPIO15(D8) -> IN1  */
+int IN1 = D5;     /* GPIO2(D4) -> IN3   */
+int IN2 = D6;   /* GPIO15(D8) -> IN1  */
 int IN3 = D7;    /* GPIO0(D3) -> IN4   */
 int IN4 = D8;  /* GPIO13(D7) -> IN2  */
 
 
 /* define L298N or L293D enable pins */
-int ENB_1 = D5; /* GPIO14(D5) -> Motor-A Enable */
-int ENB_2 = D6;  /* GPIO12(D6) -> Motor-B Enable */
+int ENB_1 = D3; /* GPIO14(D5) -> Motor-A Enable */
+int ENB_2 = D4;  /* GPIO12(D6) -> Motor-B Enable */
 
-void setup()
-{
+void setup(){
+  Serial.begin(115200);
+  delay(10);
+  connectWiFi();
   /* initialize motor control pins as output */
   pinMode(IN1, OUTPUT);
   pinMode(IN2, OUTPUT); 
@@ -136,6 +138,21 @@ void MotorStop(void)
   digitalWrite(IN2,LOW);
   digitalWrite(IN3,LOW);
   digitalWrite(IN4,LOW);
+}
+
+void connectWiFi()
+{
+  Serial.println("Connecting to WIFI");
+  WiFi.begin(ssid, password);
+  while ((!(WiFi.status() == WL_CONNECTED)))
+  {
+    delay(300);
+    Serial.print("..");
+  }
+  Serial.println("");
+  Serial.println("WiFi connected");
+  Serial.println("NodeMCU Local IP is : ");
+  Serial.print((WiFi.localIP()));
 }
 
 /********************************** RECEIVE DATA FROM the APP ******************************************/
